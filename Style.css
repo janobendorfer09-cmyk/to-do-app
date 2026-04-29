@@ -1,0 +1,57 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+#HeadlineContainer {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+#listContainer {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.todo {
+  flex: 1;
+}
+
+.todo, .date, .time {
+  padding: 8px;
+  border: 2px solid black;
+}
+
+.date {
+  width: 140px;
+}
+
+.time {
+  width: 90px;
+}
+
+#buttonBar {
+  position: fixed;
+  bottom: 40px;
+  left: 20px;
+  display: flex;
+  gap: 12px;
+}
+
+button {
+  padding: 12px 18px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+#addBtn { background-color: lightgreen; }
+#editBtn { background-color: orange; }
+#saveBtn { background-color: steelblue; }
