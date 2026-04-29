@@ -3,10 +3,14 @@ let editMode = false;
 document.addEventListener("DOMContentLoaded", () => {
   loadTodos();
   setReadonly(true);
-  activateCheckboxes(); // ✅ NEU, sonst nichts
+
+  // ✅ Validierung auch für geladene Einträge aktivieren
+  activateDateValidation();
+  activateTimeValidation();
+  activateCheckboxes();
 });
 
-/* ✅ NEU: Abhaken → Eintrag verschwindet */
+/* ✅ Checkbox: Abhaken = Eintrag verschwindet */
 function activateCheckboxes() {
   document.querySelectorAll(".check").forEach(box => {
     box.addEventListener("change", function () {
@@ -41,7 +45,10 @@ document.getElementById("addBtn").addEventListener("click", () => {
     row.querySelector(".todo").focus();
   }
 
-  activateCheckboxes(); // ✅ nur für neue Zeilen
+  // ✅ WICHTIG: Validierung & Checkbox für neue Zeile aktivieren
+  activateDateValidation();
+  activateTimeValidation();
+  activateCheckboxes();
 });
 
 /* BEARBEITEN */
@@ -68,7 +75,6 @@ function saveTodos() {
 
   document.querySelectorAll(".row").forEach(row => {
     data.push({
-      checked: row.querySelector(".check").checked,
       todo: row.querySelector(".todo").value,
       date: row.querySelector(".date").value,
       time: row.querySelector(".time").value
@@ -108,4 +114,71 @@ function setReadonly(state) {
       ? input.setAttribute("readonly", "readonly")
       : input.removeAttribute("readonly");
   });
+}
+
+/* =========================
+   ✅ DATUMSVALIDIERUNG
+   ========================= */
+function activateDateValidation() {
+  document.querySelectorAll(".date").forEach(input => {
+
+    input.addEventListener("input", function () {
+      this.value = this.value.replace(/[^0-9.]/g, "");
+    });
+
+    input.addEventListener("blur", function () {
+      if (this.value === "") return;
+
+      if (!isValidDate(this.value)) {
+        alert("Bitte ein gültiges Datum im Format TT.MM.JJJJ eingeben.");
+        this.value = "";
+        this.focus();
+      }
+    });
+  });
+}
+
+function isValidDate(value) {
+  const match = value.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+  if (!match) return false;
+
+  const day = +match[1];
+  const month = +match[2] - 1;
+  const year = +match[3];
+
+  const date = new Date(year, month, day);
+
+  return (
+    year >= 1900 &&
+    year <= 2100 &&
+    date.getFullYear() === year &&
+    date.getMonth() === month &&
+    date.getDate() === day
+  );
+}
+
+/* =========================
+   ✅ UHRZEITVALIDIERUNG
+   ========================= */
+function activateTimeValidation() {
+  document.querySelectorAll(".time").forEach(input => {
+
+    input.addEventListener("input", function () {
+      this.value = this.value.replace(/[^0-9:]/g, "");
+    });
+
+    input.addEventListener("blur", function () {
+      if (this.value === "") return;
+
+      if (!isValidTime(this.value)) {
+        alert("Bitte eine gültige Uhrzeit im Format HH:MM eingeben.");
+        this.value = "";
+        this.focus();
+      }
+    });
+  });
+}
+
+function isValidTime(value) {
+  return /^([01]\d|2[0-3]):([0-5]\d)$/.test(value);
 }
